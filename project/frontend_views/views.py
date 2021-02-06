@@ -13,8 +13,9 @@ from api.forms import UpdateProfileImage
 from core.constants import US_STATES
 from core.custom_decorators import beta_blocker, login_required, full_account
 
+
 def base_view(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return TemplateResponse(request, 'static_templates/landing.html', {})
 
     a = Account.objects.get(user=request.user)
@@ -54,7 +55,6 @@ def base_view(request):
 def user_profile(request, username=None):
     if not username:
         return HttpResponseRedirect('/profile/{0}'.format(request.user))
-
     else:
         try:
             user = User.objects.get(username=username)
@@ -185,7 +185,7 @@ def settings_view(request):
 
 
 def login_view(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         if request.user.is_active:
             return HttpResponseRedirect('/')
 
@@ -208,7 +208,7 @@ def beta_register(request, email='', token=''):
 
     if is_registered:
         # registered and has been given beta access
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             invitee_user = request.user
         else:
             invitee_user = User.objects.get(email=email)
@@ -291,7 +291,7 @@ def civi2csv(request, thread_id):
     for card in Civi.objects.filter(thread_id=thread):
         data = []
         for key, value in card.dict_with_score().items():
-            if value != []:
+            if value:
                 data.append(value)
         writer.writerow(data)
     return response
